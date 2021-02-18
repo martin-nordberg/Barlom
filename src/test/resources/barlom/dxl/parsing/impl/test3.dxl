@@ -1,0 +1,111 @@
+# This is a concept with a connection.
+Concept0 is-connected-to Concept1;
+
+# This is a concept with a connection to a concept by UUID.
+Concept0 is-connected-to 12345678-abcd-efab-cdef-901234567890;
+
+# This is a concept with a connection to a typed concept.
+Concept0 is-connected-to Concept1: Type1;
+
+# This is a concept with a connection to an anonymous typed concept.
+Concept0 is-connected-to :Type1a;
+
+# This is a concept with properties and connection.
+Concept1 with
+  first = "first",
+  second = 2,
+  third = 3.0,
+  fourth = true,
+  fifth = 'c'
+has-related-concept Concept2
+;
+
+# This is another one
+Concept3: Type3 with
+  id = 12345678-ABCD-EFab-cdef-901234567890,
+  prop1 = false,
+  prop2 = 1.234E7
+is-linked-to Concept4
+;
+
+# This one has connection properties
+Concept3: Type3 with
+  id = 12345678-ABCD-EFab-cdef-901234567890,
+  prop1 = false,
+  prop2 = absent
+is-linked-to Concept4 with
+  weight = 7,
+  count = 5
+;
+
+# This one has all properties
+Concept3 with
+  id = 12345678-ABCD-EFab-cdef-901234567890,
+  prop1 = false,
+  prop2 = absent
+is-linked-to Concept4 with
+  weight = 7,
+  count = 5
+;
+
+# This one has all possibilities
+Concept3: Type3 with
+  id = 12345678-ABCD-EFab-cdef-901234567890,
+  prop1 = false,
+  prop2 = absent valid-as-of |2020-01-20T10:11:12.123Z|
+is-linked-to Concept4: Type4 with
+  weight = 7,
+  count = 5
+;
+
+# This one has no concept names
+:Type3 with
+  id = 12345678-abcd-efab-cdef-901234567890 valid-as-of |2020-01-20T10:11:12.123Z|,
+  prop1 = false,
+  prop2 = absent
+is-linked-to :Type4 with
+  weight = 7,
+  count = 5
+;
+
+# This one has connection properties without concept properties
+Concept3: Type3
+is-linked-to Concept4 with
+  weight = 7,
+  count = 5
+;
+
+# This one has an absent connection property
+Concept3: Type3
+is-linked-to Concept4 with
+  weight = 7,
+  count = absent
+;
+
+# A disconnection
+ConceptA no-longer connects-to ConceptB: TypeB;
+
+# A disconnection with concept properties
+ConceptA with
+  prop1 = 78i64
+no-longer connects-to ConceptB
+;
+
+# A disconnection
+ConceptA no-longer connects-to ConceptB;
+
+# A disconnection with valid-as-of time
+ConceptA no-longer connects-to ConceptB valid-as-of |2020-01-02T03:04:05.678Z|;
+
+# A disconnection with concept properties
+ConceptA with
+  prop1 = 78i64
+no-longer connects-to ConceptB valid-as-of |2020-01-02T03:04:05.678Z|
+;
+
+:TypeQ with
+  id = 12345678-ABCD-EFab-cdef-901234567890
+has-friend Friend valid-as-of |2020-01-02T03:04:05.678Z|
+;
+
+12345678-abcd-efab-cdef-901234567890 Type'4 name$7: Type-6;

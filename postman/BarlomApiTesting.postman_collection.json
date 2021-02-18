@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "79d6b4bb-90ea-4abe-8100-1466c5b84f9a",
+		"name": "BarlomSchemaServerApiTesting",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Metrics",
+			"item": [
+				{
+					"name": "Liveness Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is Alive\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{healthUrl}}/liveness",
+							"host": [
+								"{{healthUrl}}"
+							],
+							"path": [
+								"liveness"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Readiness Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is Alive\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{healthUrl}}/readiness",
+							"host": [
+								"{{healthUrl}}"
+							],
+							"path": [
+								"readiness"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Configuration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is Alive\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{healthUrl}}/config",
+							"host": [
+								"{{healthUrl}}"
+							],
+							"path": [
+								"config"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Format",
+			"item": [
+				{
+					"name": "Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Formatted Code\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    \r",
+									"    const formattedCode = pm.response.text();\r",
+									"    pm.expect(formattedCode.replace(/\\r/g,\"\")).to.equal(pm.request.body.raw.replace(/\\r/g,\"\"));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "# This is a concept with properties.\r\nConcept1 with\r\n  first = \"first\",\r\n  second = 2,\r\n  third = 3.0,\r\n  fourth = true,\r\n  fifth = 'c'\r\n;\r\n\r\n# This is another one\r\n12345678-abcd-efab-cdef-901234567890: Type2 with\r\n  prop1 = false,\r\n  prop2 = 1.234E7\r\n;\r\n\r\n# This one obsoletes a property\r\nConcept3: Type3 with\r\n  prop1 = absent,\r\n  prop2 = 1.234E7\r\n;\r\n\r\n# This one has bounded literal properties\r\nConcept4: Type3 with\r\n  prop1 = |2017-11-30|,\r\n  prop2 = |2020-03-15T13:00:34.999Z|,\r\n  prop3 = |T01:02|,\r\n  prop4 = |http://sample.com/nowhere?really=true|,\r\n  prop5 = |https://sample.com|\r\n;\r\n\r\n# This one has no name or UUID\r\n:Type5 with\r\n  x = 42\r\n;\r\n\r\n# Properties can have UUID values\r\nConcept6 with\r\n  id = 12345678-abcd-efab-cdef-901234567890\r\n;\r\n\r\n# This is a concept with properties at effective times.\r\nConcept7: Type7 with\r\n  first = \"first\" effective |2020-01-20T10:11:12.123Z|,\r\n  second = 2 effective |2020-01-20T10:11:12Z|,\r\n  third = 3.0 effective |2020-01-20T10:11:12.123456789Z|,\r\n  fourth = true effective |2020-01-20T10:11:12.123456Z|,\r\n  fifth = 'c' effective |2020-01-20T10:11:12.123Z|\r\n;\r\n",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/format",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"format"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,49 @@
+# This is a concept with properties.
+Concept1 with
+  first = "first",
+  second = 2,
+  third = 3.0,
+  fourth = true,
+  fifth = 'c'
+;
+
+# This is another one
+12345678-abcd-efab-cdef-901234567890: Type2 with
+  prop1 = false,
+  prop2 = 1.234E7
+;
+
+# This one obsoletes a property
+Concept3: Type3 with
+  prop1 = absent,
+  prop2 = 1.234E7
+;
+
+# This one has bounded literal properties
+Concept4: Type3 with
+  prop1 = |2017-11-30|,
+  prop2 = |2020-03-15T13:00:34.999Z|,
+  prop3 = |T01:02|,
+  prop4 = |http://sample.com/nowhere?really=true|,
+  prop5 = |https://sample.com|
+;
+
+# This one has no name or UUID
+:Type5 with
+  x = 42
+;
+
+# Properties can have UUID values
+Concept6 with
+  id = 12345678-abcd-efab-cdef-901234567890
+;
+
+# This is a concept with properties at valid times.
+Concept7: Type7 with
+  first = "first" valid-as-of |2020-01-20T10:11:12.123Z|,
+  second = 2 valid-as-of |2020-01-20T10:11:12Z|,
+  third = 3.0 valid-as-of |2020-01-20T10:11:12.123456789Z|,
+  fourth = true valid-as-of |2020-01-20T10:11:12.123456Z|,
+  fifth = 'c' valid-as-of |2020-01-20T10:11:12.123Z|
+;
+
