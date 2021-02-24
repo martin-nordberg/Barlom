@@ -17,7 +17,7 @@ abstract class PropertyContainer : IPropertyContainer {
 
     private val properties: MutableMap<String, IPropertyValueHistory> = mutableMapOf()
 
-    override fun add(
+    override fun addProperty(
         propertyName: String,
         initialAssertionTime: Instant,
         vararg initialValues: TimeSpanningPropertyValue
@@ -42,4 +42,3 @@ abstract class PropertyContainer : IPropertyContainer {
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-

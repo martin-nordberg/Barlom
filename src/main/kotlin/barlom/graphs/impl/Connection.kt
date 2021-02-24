@@ -5,21 +5,21 @@
 
 package barlom.graphs.impl
 
-import barlom.graphs.IConcept
 import barlom.graphs.IConnection
 import barlom.util.Uuid
 
 //---------------------------------------------------------------------------------------------------------------------
 
 class Connection(
-    id: Uuid?,
-    override val from: IConcept,
-    override val to: IConcept
+    id: Uuid? = null,
+    override val from: Concept,
+    override val type: Concept,
+    override val to: Concept
 ) : PropertyContainer(), IConnection {
 
     init {
-        (from as Concept).addConnectionOut(this)
-        (to as Concept).addConnectionIn(this)
+        from.addConnectionOut(this)
+        to.addConnectionIn(this)
     }
 
     override val id = id ?: Uuid.make()
@@ -27,4 +27,3 @@ class Connection(
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-

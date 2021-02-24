@@ -18,7 +18,12 @@ interface IConcept
 
     val id: Uuid
 
+    val metaConnectionsIn: Collection<IConnection>
+
+    val metaConnectionsOut: Collection<IConnection>
+
+    val metaLevel: EMetaLevel
+
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-

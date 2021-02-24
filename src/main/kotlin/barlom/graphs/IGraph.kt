@@ -13,19 +13,19 @@ interface IGraph {
 
     fun establishConcept(
         id: Uuid? = null,
-        type: IConcept? = null,
-        initialize: (IConcept) -> Unit
+        type: IConcept,
+        typeConnectionId: Uuid? = null,
+        initialize: IConcept.() -> Unit = {}
     ): IConcept
 
     fun establishConnection(
         id: Uuid? = null,
         from: IConcept,
-        to: IConcept,
         type: IConcept,
-        initialize: (IConnection) -> Unit
+        to: IConcept,
+        initialize: IConnection.() -> Unit = {}
     ): IConnection
 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-

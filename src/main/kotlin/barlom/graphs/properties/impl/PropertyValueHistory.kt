@@ -35,7 +35,8 @@ class PropertyValueHistory(
         var stagedValue = if (initialValues.first().interval.startsInDistantPast()) {
             i += 1
             initialValues.first()
-        } else {
+        }
+        else {
             TimeSpanningPropertyValue(
                 AbsentPropertyValue,
                 TimeInterval.endingAt(initialValues.first().interval.start)
@@ -48,7 +49,8 @@ class PropertyValueHistory(
 
             stagedValue = if (stagedValue.state == nextValue.state) {
                 stagedValue.extendedThrough(nextValue.interval)
-            } else {
+            }
+            else {
                 states.add(stagedValue)
                 nextValue
             }
@@ -99,7 +101,8 @@ class PropertyValueHistory(
 
             if (valueHistory[mid].first <= assertionTime) {
                 left = mid
-            } else {
+            }
+            else {
                 right = mid
             }
 
@@ -138,7 +141,8 @@ class PropertyValueHistory(
         if (latestList[0].interval.startsBefore(newValues[0].interval)) {
             stagedValue = latestList[0]
             iOld = 1
-        } else {
+        }
+        else {
             stagedValue = newValues[0]
             iNew = 1
         }
@@ -156,39 +160,48 @@ class PropertyValueHistory(
                 if (stagedValue.interval.meets(oldValue.interval)) {
                     stagedValue = if (stagedValue.state == oldValue.state) {
                         stagedValue.extendedThrough(oldValue.interval)
-                    } else {
+                    }
+                    else {
                         newList.add(stagedValue)
                         oldValue
                     }
-                } else if (oldValue.interval.within(stagedValue.interval)) {
+                }
+                else if (oldValue.interval.within(stagedValue.interval)) {
                     // Discard an old entry that has been fully upstaged by a new entry.
-                } else if (stagedValue.state == oldValue.state) {
+                }
+                else if (stagedValue.state == oldValue.state) {
                     stagedValue = stagedValue.extendedThrough(oldValue.interval)
-                } else {
+                }
+                else {
                     newList.add(stagedValue.spanningUpTo(oldValue.interval))
                     stagedValue = oldValue
                 }
 
                 iOld += 1
-            } else {
+            }
+            else {
                 check(!stagedValue.interval.precedes(newValue.interval))
 
                 if (stagedValue.interval.meets(newValue.interval)) {
                     stagedValue = if (stagedValue.state == newValue.state) {
                         stagedValue.extendedThrough(newValue.interval)
-                    } else {
+                    }
+                    else {
                         newList.add(stagedValue)
                         newValue
                     }
-                } else if (stagedValue.interval.endsAfter(newValue.interval)) {
+                }
+                else if (stagedValue.interval.endsAfter(newValue.interval)) {
                     if (stagedValue.state != newValue.state) {
                         newList.add(stagedValue.spanningUpTo(newValue.interval))
                         newList.add(newValue)
                         stagedValue = stagedValue.spanningAfter(newValue.interval)
                     }
-                } else if (stagedValue.state == newValue.state) {
+                }
+                else if (stagedValue.state == newValue.state) {
                     stagedValue = stagedValue.extendedThrough(newValue.interval)
-                } else {
+                }
+                else {
                     newList.add(stagedValue.spanningUpTo(newValue.interval))
                     stagedValue = newValue
                 }
@@ -207,15 +220,19 @@ class PropertyValueHistory(
             if (stagedValue.interval.meets(oldValue.interval)) {
                 stagedValue = if (stagedValue.state == oldValue.state) {
                     stagedValue.extendedThrough(oldValue.interval)
-                } else {
+                }
+                else {
                     newList.add(stagedValue)
                     oldValue
                 }
-            } else if (oldValue.interval.within(stagedValue.interval)) {
+            }
+            else if (oldValue.interval.within(stagedValue.interval)) {
                 // Discard an old entry that has been fully upstaged by a new entry.
-            } else if (stagedValue.state == oldValue.state) {
+            }
+            else if (stagedValue.state == oldValue.state) {
                 stagedValue = stagedValue.extendedThrough(oldValue.interval)
-            } else {
+            }
+            else {
                 newList.add(stagedValue.spanningUpTo(oldValue.interval))
                 stagedValue = oldValue
             }
@@ -232,19 +249,23 @@ class PropertyValueHistory(
             if (stagedValue.interval.meets(newValue.interval)) {
                 stagedValue = if (stagedValue.state == newValue.state) {
                     stagedValue.extendedThrough(newValue.interval)
-                } else {
+                }
+                else {
                     newList.add(stagedValue)
                     newValue
                 }
-            } else if (stagedValue.interval.endsAfter(newValue.interval)) {
+            }
+            else if (stagedValue.interval.endsAfter(newValue.interval)) {
                 if (stagedValue.state != newValue.state) {
                     newList.add(stagedValue.spanningUpTo(newValue.interval))
                     newList.add(newValue)
                     stagedValue = stagedValue.spanningAfter(newValue.interval)
                 }
-            } else if (stagedValue.state == newValue.state) {
+            }
+            else if (stagedValue.state == newValue.state) {
                 stagedValue = stagedValue.extendedThrough(newValue.interval)
-            } else {
+            }
+            else {
                 newList.add(stagedValue.spanningUpTo(newValue.interval))
                 stagedValue = newValue
             }
@@ -258,7 +279,8 @@ class PropertyValueHistory(
         // Add or replace the last chain in the history.
         if (assertionTime > latestAssertionTime) {
             valueHistory.add(assertionTime to newList)
-        } else {
+        }
+        else {
             valueHistory[valueHistory.size - 1] = assertionTime to newList
         }
 
@@ -289,7 +311,8 @@ class PropertyValueHistory(
 
             if (values[mid].interval.start <= stateTime) {
                 left = mid
-            } else {
+            }
+            else {
                 right = mid
             }
 

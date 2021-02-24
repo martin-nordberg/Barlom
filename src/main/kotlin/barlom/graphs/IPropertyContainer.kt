@@ -6,7 +6,9 @@
 package barlom.graphs
 
 import barlom.graphs.properties.IPropertyValueHistory
+import barlom.graphs.properties.StringPropertyValue
 import barlom.graphs.properties.TimeSpanningPropertyValue
+import barlom.util.TimeInterval
 import java.time.Instant
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -17,11 +19,23 @@ import java.time.Instant
 interface IPropertyContainer {
 
     /** Adds a property by [propertyName]. */
-    fun add(
+    fun addProperty(
         propertyName: String,
         initialAssertionTime: Instant,
         vararg initialValues: TimeSpanningPropertyValue
     )
+
+    fun addProperty(
+        propertyName: String,
+        initialAssertionAndStateTime: Instant,
+        value: String
+    ) {
+        addProperty(
+            propertyName,
+            initialAssertionAndStateTime,
+            TimeSpanningPropertyValue(StringPropertyValue(value), TimeInterval.startingAt(initialAssertionAndStateTime))
+        )
+    }
 
     /** @return a property by [propertyName]. */
     operator fun get(propertyName: String): IPropertyValueHistory?
@@ -35,4 +49,3 @@ interface IPropertyContainer {
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-

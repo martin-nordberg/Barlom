@@ -84,7 +84,6 @@ data class TimeSpanningPropertyValue(
         return "TimeSpanningPropertyValue(state=$state, interval=$interval)"
     }
 
-
 }
 
 //---------------------------------------------------------------------------------------------------------------------

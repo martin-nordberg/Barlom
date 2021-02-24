@@ -84,6 +84,10 @@ class Uuid(
         return (hilo shr 32).toInt() xor hilo.toInt()
     }
 
+    operator fun inc(): Uuid {
+        return nextInReservedBlock()
+    }
+
     /**
      * Returns a `String` object representing this `UUID`.
      *
