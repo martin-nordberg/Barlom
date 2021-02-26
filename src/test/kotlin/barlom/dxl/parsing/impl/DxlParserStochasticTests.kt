@@ -21,9 +21,11 @@ import barlom.dxl.model.properties.DxlProperty
 import barlom.dxl.model.types.DxlNoTypeRef
 import barlom.dxl.model.types.DxlOptTypeRef
 import barlom.dxl.model.types.DxlTypeRef
+import barlom.util.TimeInterval
 import barlom.util.Uuid
 import org.junit.jupiter.api.Test
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
 import kotlin.test.assertEquals
 
@@ -177,6 +179,20 @@ internal class DxlParserStochasticTests {
         }
     }
 
+    private fun makeOptValidTimeInterval(): TimeInterval? {
+        val start = if (getRandom(3) == 0) {
+            Instant.now()
+        } else {
+            return null
+        }
+        val end = if (getRandom(3) == 0) {
+            Instant.now().plus(getRandom(200).toLong(), ChronoUnit.DAYS)
+        } else {
+            return null
+        }
+        return TimeInterval.of(start, end)
+    }
+
     private fun makeOptLabel(): DxlOptLabel {
 
         val nNames = getRandom(4)
@@ -241,7 +257,7 @@ internal class DxlParserStochasticTests {
                 DxlProperty(
                     DxlSimpleName(DxlNullOrigin, makeNameText("prop")),
                     makeExpression(),
-                    makeOptValidTime()
+                    makeOptValidTimeInterval()
                 )
             )
         }
@@ -296,4 +312,3 @@ internal class DxlParserStochasticTests {
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-

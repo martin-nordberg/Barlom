@@ -18,6 +18,7 @@ import barlom.dxl.model.properties.DxlProperty
 import barlom.dxl.model.types.DxlNoTypeRef
 import barlom.dxl.model.types.DxlOptTypeRef
 import barlom.dxl.model.types.DxlTypeRef
+import barlom.util.TimeInterval
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
@@ -138,17 +139,6 @@ class CodeGenerator(
         writeOptTypeRef(disconnection.concept.typeRef, true)
 
         writeValidTime(disconnection.validTime)
-
-    }
-
-    private fun writeValidTime(validTime: Instant?) {
-
-        if (validTime != null) {
-            output.append(" ")
-            output.append("valid-as-of |")
-            output.append(DateTimeFormatter.ISO_INSTANT.format(validTime))
-            output.append("|")
-        }
 
     }
 
@@ -284,7 +274,38 @@ class CodeGenerator(
         output.append(property.name.text)
         output.append(" = ")
         writeExpression(property.value)
-        writeValidTime(property.validTime)
+        writeValidTimeInterval(property.validTimeInterval)
+
+    }
+
+    private fun writeValidTime(validTime: Instant?) {
+
+        if (validTime != null) {
+            output.append(" ")
+            output.append("valid-as-of |")
+            output.append(DateTimeFormatter.ISO_INSTANT.format(validTime))
+            output.append("|")
+        }
+
+    }
+
+    private fun writeValidTimeInterval(validTimeInterval: TimeInterval?) {
+
+        if (validTimeInterval != null) {
+            output.append(" ")
+            if (validTimeInterval.endsInDistantFuture()) {
+                output.append("valid-as-of |")
+                output.append(DateTimeFormatter.ISO_INSTANT.format(validTimeInterval.start))
+                output.append("|")
+            }
+            else {
+                output.append("valid-during |")
+                output.append(DateTimeFormatter.ISO_INSTANT.format(validTimeInterval.start))
+                output.append("|..|")
+                output.append(DateTimeFormatter.ISO_INSTANT.format(validTimeInterval.end))
+                output.append("|")
+            }
+        }
 
     }
 

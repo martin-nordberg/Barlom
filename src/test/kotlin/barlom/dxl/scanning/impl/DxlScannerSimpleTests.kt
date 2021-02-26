@@ -137,7 +137,9 @@ internal class DxlScannerSimpleTests
         checkScan(AND, "and")
         checkScan(AS, "as")
         checkScan(NO_LONGER, "no-longer")
+        checkScan(TRANSACTED_AT, "transacted-at")
         checkScan(VALID_AS_OF, "valid-as-of")
+        checkScan(VALID_DURING, "valid-during")
         checkScan(WITH, "with")
 
     }
@@ -243,4 +245,3 @@ internal class DxlScannerSimpleTests
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-

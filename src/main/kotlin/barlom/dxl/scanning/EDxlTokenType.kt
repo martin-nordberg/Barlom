@@ -17,7 +17,9 @@ internal enum class EDxlTokenType(
     AND("and"),
     AS("as"),
     NO_LONGER("no-longer"),
+    TRANSACTED_AT("transacted-at"),
     VALID_AS_OF("valid-as-of"),
+    VALID_DURING("valid-during"),
     WITH("with"),
 
     /* Punctuation */
@@ -28,7 +30,7 @@ internal enum class EDxlTokenType(
     COLON("':'"),
     COMMA("','"),
     DOT("'.'"),
-    DOUBLE_DOT("'.'"),
+    DOUBLE_DOT("'..'"),
     EQUALS("'='"),
     EXCLAMATION("'!'"),
     LEFT_BRACE("'{'"),
@@ -91,4 +93,3 @@ internal enum class EDxlTokenType(
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-

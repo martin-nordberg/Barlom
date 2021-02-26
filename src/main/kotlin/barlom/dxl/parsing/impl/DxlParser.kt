@@ -22,6 +22,7 @@ import barlom.dxl.model.types.DxlTypeRef
 import barlom.dxl.parsing.IDxlParser
 import barlom.dxl.scanning.DxlToken
 import barlom.dxl.scanning.EDxlTokenType.*
+import barlom.util.TimeInterval
 import barlom.util.Uuid
 import java.time.Instant
 
@@ -72,7 +73,8 @@ class DxlParser(
 
             if (qualifiedName is DxlQualifiedName) {
                 aliases.add(DxlAlias(aliasToken.origin, name, qualifiedName))
-            } else {
+            }
+            else {
                 input.expected("aliased name to be fully qualified")
             }
         }
@@ -113,7 +115,8 @@ class DxlParser(
         // typeName?
         val typeRef = if (label is DxlNoLabel) {
             parseTypeRef(false)
-        } else {
+        }
+        else {
             parseTypeRefOpt()
         }
 
@@ -161,11 +164,11 @@ class DxlParser(
                 DxlNoConnectionDeclaration
             }
 
-            input.consumeWhen(NO_LONGER) -> {
+            input.consumeWhen(NO_LONGER)  -> {
                 parseDisconnectionDeclaration()
             }
 
-            else -> {
+            else                          -> {
                 parseConnectionDeclaration()
             }
 
@@ -255,25 +258,6 @@ class DxlParser(
     }
 
     /**
-     * Parses an optional "valid-as-of" phrase.
-     *
-     * validTime
-     *   : "valid-as-of" dateTimeLiteral
-     *   ;
-     */
-    private fun parseValidTimeOpt(): Instant? {
-
-        // "valid-as-of"
-        return if (input.consumeWhen(VALID_AS_OF)) {
-            // dateTimeLiteral
-            input.read(DATE_TIME_LITERAL).toInstant
-        } else {
-            null
-        }
-
-    }
-
-    /**
      * Parses an expression.
      *
      * expression
@@ -295,18 +279,18 @@ class DxlParser(
         val token = input.read()
 
         when (token.type) {
-            ABSENT -> return DxlAbsent(token.origin)
-            BOOLEAN_LITERAL -> return DxlBooleanLiteral(token.origin, token.text)
-            CHARACTER_LITERAL -> return DxlCharacterLiteral(token.origin, token.text)
-            DATE_LITERAL -> return DxlDateLiteral(token.origin, token.text)
-            DATE_TIME_LITERAL -> return DxlDateTimeLiteral(token.origin, token.text)
+            ABSENT                 -> return DxlAbsent(token.origin)
+            BOOLEAN_LITERAL        -> return DxlBooleanLiteral(token.origin, token.text)
+            CHARACTER_LITERAL      -> return DxlCharacterLiteral(token.origin, token.text)
+            DATE_LITERAL           -> return DxlDateLiteral(token.origin, token.text)
+            DATE_TIME_LITERAL      -> return DxlDateTimeLiteral(token.origin, token.text)
             FLOATING_POINT_LITERAL -> return DxlFloatingPointLiteral(token.origin, token.text)
-            INTEGER_LITERAL -> return DxlIntegerLiteral(token.origin, token.text)
-            STRING_LITERAL -> return DxlStringLiteral(token.origin, token.text)
-            TIME_LITERAL -> return DxlTimeLiteral(token.origin, token.text)
-            URL_LITERAL -> return DxlUrlLiteral(token.origin, token.text)
-            UUID_LITERAL -> return DxlUuidLiteral(token.origin, token.text)
-            else -> input.expected("expression")
+            INTEGER_LITERAL        -> return DxlIntegerLiteral(token.origin, token.text)
+            STRING_LITERAL         -> return DxlStringLiteral(token.origin, token.text)
+            TIME_LITERAL           -> return DxlTimeLiteral(token.origin, token.text)
+            URL_LITERAL            -> return DxlUrlLiteral(token.origin, token.text)
+            UUID_LITERAL           -> return DxlUuidLiteral(token.origin, token.text)
+            else                   -> input.expected("expression")
         }
 
         // TODO: more than just literals
@@ -364,7 +348,7 @@ class DxlParser(
      * Parses a property definition.
      *
      * property
-     *   : simpleName "=" expression validTime?
+     *   : simpleName "=" expression validTimeInterval?
      *   ;
      *
      */
@@ -379,10 +363,10 @@ class DxlParser(
         // expression
         val value = parseExpression()
 
-        // validTime?
-        val validTime = parseValidTimeOpt()
+        // validTimeInterval?
+        val validTimeInterval = parseValidTimeIntervalOpt()
 
-        return DxlProperty(name, value, validTime)
+        return DxlProperty(name, value, validTimeInterval)
 
     }
 
@@ -462,6 +446,62 @@ class DxlParser(
         val typeName = parseQualifiedName()
 
         return DxlTypeRef(typeName, isForNamedElement)
+
+    }
+
+    /**
+     * Parses an optional "valid-as-of" phrase.
+     *
+     * validTime
+     *   : "valid-as-of" dateTimeLiteral
+     *   ;
+     */
+    private fun parseValidTimeOpt(): Instant? {
+
+        // "valid-as-of"
+        return if (input.consumeWhen(VALID_AS_OF)) {
+            // dateTimeLiteral
+            input.read(DATE_TIME_LITERAL).toInstant
+        }
+        else {
+            null
+        }
+
+    }
+
+    /**
+     * Parses an optional "valid-as-of" or "valid-during" phrase.
+     *
+     * validTime
+     *   : "valid-as-of" dateTimeLiteral
+     *   | "valid-during" dateTimeLiteral ".." dateTimeLiteral
+     *   ;
+     */
+    private fun parseValidTimeIntervalOpt(): TimeInterval? {
+
+        return when {
+
+            // "valid-as-of"
+            input.consumeWhen(VALID_AS_OF)  -> {
+                // dateTimeLiteral
+                TimeInterval.startingAt(input.read(DATE_TIME_LITERAL).toInstant)
+            }
+
+            // "valid-during"
+            input.consumeWhen(VALID_DURING) -> {
+                // dateTimeLiteral
+                val start = input.read(DATE_TIME_LITERAL).toInstant
+                // ".."
+                input.read(DOUBLE_DOT)
+                // dateTimeLiteral
+                TimeInterval.of(start, input.read(DATE_TIME_LITERAL).toInstant)
+            }
+
+            else                            -> {
+                null
+            }
+
+        }
 
     }
 

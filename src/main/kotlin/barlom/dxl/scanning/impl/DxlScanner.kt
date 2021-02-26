@@ -332,7 +332,9 @@ internal class DxlScanner(
             "and" -> return extractTokenFromMark(AND)
             "as" -> return extractTokenFromMark(AS)
             "no-longer" -> return extractTokenFromMark(NO_LONGER)
+            "transacted-at" -> return extractTokenFromMark(TRANSACTED_AT)
             "valid-as-of" -> return extractTokenFromMark(VALID_AS_OF)
+            "valid-during" -> return extractTokenFromMark(VALID_DURING)
             "with" -> return extractTokenFromMark(WITH)
 
             "false" -> return extractTokenFromMark(BOOLEAN_LITERAL)
@@ -452,4 +454,3 @@ internal class DxlScanner(
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-
