@@ -13,17 +13,16 @@ interface IPropertyValueHistory {
 
     /** Returns the property's value at a given instant in time together with the span of time it had that value. */
     fun get(
-        stateTime: Instant = Instant.now(),
-        assertionTime: Instant = Instant.now()
+        validTime: Instant = Instant.now(),
+        transactionTime: Instant = Instant.now()
     ): TimeSpanningPropertyValue
 
-    /** Sets [newValues] for a property given at a given [assertionTime]. */
+    /** Sets [newValues] for a property given at a given [transactionTime]. */
     fun set(
-        assertionTime: Instant = Instant.now(),
+        transactionTime: Instant = Instant.now(),
         vararg newValues: TimeSpanningPropertyValue
     )
 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-

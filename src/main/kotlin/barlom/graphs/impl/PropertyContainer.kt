@@ -19,12 +19,12 @@ abstract class PropertyContainer : IPropertyContainer {
 
     override fun addProperty(
         propertyName: String,
-        initialAssertionTime: Instant,
+        initialTransactionTime: Instant,
         vararg initialValues: TimeSpanningPropertyValue
     ) {
         require(!hasProperty(propertyName))
 
-        properties[propertyName] = PropertyValueHistory(initialAssertionTime, *initialValues)
+        properties[propertyName] = PropertyValueHistory(initialTransactionTime, *initialValues)
     }
 
     override fun hasProperty(propertyName: String): Boolean {

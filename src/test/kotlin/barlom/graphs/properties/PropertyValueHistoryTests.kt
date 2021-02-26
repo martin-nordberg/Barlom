@@ -43,9 +43,9 @@ class PropertyValueHistoryTests {
             TimeSpanningPropertyValue(values[0], TimeInterval.startingAt(times[0]))
         )
 
-        for (assertionTime in times) {
-            for (stateTime in times) {
-                assertEquals(values[0], history.get(stateTime, assertionTime).state)
+        for (transactionTime in times) {
+            for (validTime in times) {
+                assertEquals(values[0], history.get(validTime, transactionTime).state)
             }
         }
 

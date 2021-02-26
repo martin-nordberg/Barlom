@@ -9,6 +9,7 @@ import barlom.dxl.model.core.DxlItem
 import barlom.dxl.model.expressions.DxlExpression
 import barlom.dxl.model.labels.DxlSimpleName
 import barlom.util.TimeInterval
+import java.time.Instant
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -22,7 +23,10 @@ class DxlProperty(
     val value: DxlExpression,
 
     /** The time interval during which the new state is valid. */
-    val validTimeInterval: TimeInterval?
+    val validTimeInterval: TimeInterval?,
+
+    /** The time when this property was set. */
+    val transactionTime: Instant?
 
 ) : DxlItem(name.origin)
 

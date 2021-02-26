@@ -58,7 +58,8 @@ internal class DxlParserStochasticTests {
                 assertEquals(code1, code2)
 
 //                assertEquals("Uncomment to look at a sample", code1)
-            } catch (e: Exception) {
+            }
+            catch (e: Exception) {
                 throw Exception("FAILED:\n==============\n$code1\n==============\n", e)
             }
         }
@@ -95,7 +96,8 @@ internal class DxlParserStochasticTests {
                 docText += "# Some documentation ${Math.random()}\n"
             }
             DxlDocumentation(DxlNullOrigin, docText)
-        } else {
+        }
+        else {
             DxlNoDocumentation
         }
 
@@ -171,26 +173,46 @@ internal class DxlParserStochasticTests {
         )
     }
 
-    private fun makeOptValidTime(): Instant? {
+    private fun makeOptTransactionTime(): Instant? {
+
         return if (getRandom(3) == 0) {
             Instant.now()
-        } else {
+        }
+        else {
             null
         }
+
+    }
+
+    private fun makeOptValidTime(): Instant? {
+
+        return if (getRandom(3) == 0) {
+            Instant.now()
+        }
+        else {
+            null
+        }
+
     }
 
     private fun makeOptValidTimeInterval(): TimeInterval? {
+
         val start = if (getRandom(3) == 0) {
             Instant.now()
-        } else {
+        }
+        else {
             return null
         }
+
         val end = if (getRandom(3) == 0) {
-            Instant.now().plus(getRandom(200).toLong(), ChronoUnit.DAYS)
-        } else {
+            Instant.now().plus(getRandom(200).toLong() + 1L, ChronoUnit.DAYS)
+        }
+        else {
             return null
         }
+
         return TimeInterval.of(start, end)
+
     }
 
     private fun makeOptLabel(): DxlOptLabel {
@@ -257,7 +279,8 @@ internal class DxlParserStochasticTests {
                 DxlProperty(
                     DxlSimpleName(DxlNullOrigin, makeNameText("prop")),
                     makeExpression(),
-                    makeOptValidTimeInterval()
+                    makeOptValidTimeInterval(),
+                    makeOptTransactionTime()
                 )
             )
         }

@@ -21,19 +21,19 @@ interface IPropertyContainer {
     /** Adds a property by [propertyName]. */
     fun addProperty(
         propertyName: String,
-        initialAssertionTime: Instant,
+        initialTransactionTime: Instant,
         vararg initialValues: TimeSpanningPropertyValue
     )
 
     fun addProperty(
         propertyName: String,
-        initialAssertionAndStateTime: Instant,
+        initialTransactionAndValidTime: Instant,
         value: String
     ) {
         addProperty(
             propertyName,
-            initialAssertionAndStateTime,
-            TimeSpanningPropertyValue(StringPropertyValue(value), TimeInterval.startingAt(initialAssertionAndStateTime))
+            initialTransactionAndValidTime,
+            TimeSpanningPropertyValue(StringPropertyValue(value), TimeInterval.startingAt(initialTransactionAndValidTime))
         )
     }
 

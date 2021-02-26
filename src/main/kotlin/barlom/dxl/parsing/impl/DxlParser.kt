@@ -348,7 +348,7 @@ class DxlParser(
      * Parses a property definition.
      *
      * property
-     *   : simpleName "=" expression validTimeInterval?
+     *   : simpleName "=" expression validTimeInterval? transactionTime?
      *   ;
      *
      */
@@ -366,7 +366,10 @@ class DxlParser(
         // validTimeInterval?
         val validTimeInterval = parseValidTimeIntervalOpt()
 
-        return DxlProperty(name, value, validTimeInterval)
+        // transactionTime?
+        val transactionTime = parseTransactionTimeOpt()
+
+        return DxlProperty(name, value, validTimeInterval, transactionTime)
 
     }
 
@@ -419,6 +422,26 @@ class DxlParser(
     }
 
     /**
+     * Parses an optional "transacted-at" phrase.
+     *
+     * transactionTime
+     *   : "transacted-at" dateTimeLiteral
+     *   ;
+     */
+    private fun parseTransactionTimeOpt(): Instant? {
+
+        // "transacted-at"
+        return if (input.consumeWhen(TRANSACTED_AT)) {
+            // dateTimeLiteral
+            input.read(DATE_TIME_LITERAL).toInstant
+        }
+        else {
+            null
+        }
+
+    }
+
+    /**
      * Parses an optional type reference.
      */
     private fun parseTypeRefOpt(): DxlOptTypeRef {
@@ -450,7 +473,7 @@ class DxlParser(
     }
 
     /**
-     * Parses an optional "valid-as-of" phrase.
+     * Parses an optional "stated-as-of" phrase.
      *
      * validTime
      *   : "valid-as-of" dateTimeLiteral

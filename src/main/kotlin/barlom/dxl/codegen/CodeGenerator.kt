@@ -87,7 +87,7 @@ class CodeGenerator(
                     when (connection) {
                         is DxlConnectionDeclaration ->
                             connection.properties.isNotEmpty()
-                        else ->
+                        else                        ->
                             false
                     }
 
@@ -99,7 +99,8 @@ class CodeGenerator(
 
             if (!useMultipleLines) {
                 output.append(" ")
-            } else if (useMultipleLines && concept.properties.isEmpty()) {
+            }
+            else if (useMultipleLines && concept.properties.isEmpty()) {
                 output.appendNewLine()
             }
 
@@ -150,7 +151,7 @@ class CodeGenerator(
                 output.append(value.text)
             }
 
-            is DxlAbsent -> {
+            is DxlAbsent            -> {
                 output.append("absent")
             }
 
@@ -168,10 +169,10 @@ class CodeGenerator(
                 writeDisconnectionDeclaration(connection)
             }
 
-            DxlNoConnectionDeclaration -> {
+            DxlNoConnectionDeclaration     -> {
             }
 
-            is DxlConnectionDeclaration -> {
+            is DxlConnectionDeclaration    -> {
                 writeConnectionDeclaration(connection)
                 needsNewLine = useMultipleLines && connection.properties.isEmpty()
             }
@@ -188,7 +189,7 @@ class CodeGenerator(
 
         when (doc) {
 
-            is DxlDocumentation -> {
+            is DxlDocumentation   -> {
                 output.append(doc.text)
             }
 
@@ -209,15 +210,15 @@ class CodeGenerator(
                 output.append("\"")
             }
 
-            is DxlUuidLabel -> {
+            is DxlUuidLabel   -> {
                 output.append(name.uuid.toString())
             }
 
-            is DxlName -> {
+            is DxlName        -> {
                 output.append(name.text)
             }
 
-            DxlNoLabel -> {
+            DxlNoLabel        -> {
             }
 
         }
@@ -228,7 +229,7 @@ class CodeGenerator(
 
         when (typeRef) {
 
-            is DxlTypeRef -> {
+            is DxlTypeRef   -> {
 
                 if (needsColon) {
                     output.append(":")
@@ -275,14 +276,24 @@ class CodeGenerator(
         output.append(" = ")
         writeExpression(property.value)
         writeValidTimeInterval(property.validTimeInterval)
+        writeTransactionTime(property.transactionTime)
+
+    }
+
+    private fun writeTransactionTime(transactionTime: Instant?) {
+
+        if (transactionTime != null) {
+            output.append(" transacted-at |")
+            output.append(DateTimeFormatter.ISO_INSTANT.format(transactionTime))
+            output.append("|")
+        }
 
     }
 
     private fun writeValidTime(validTime: Instant?) {
 
         if (validTime != null) {
-            output.append(" ")
-            output.append("valid-as-of |")
+            output.append(" valid-as-of |")
             output.append(DateTimeFormatter.ISO_INSTANT.format(validTime))
             output.append("|")
         }
@@ -292,19 +303,20 @@ class CodeGenerator(
     private fun writeValidTimeInterval(validTimeInterval: TimeInterval?) {
 
         if (validTimeInterval != null) {
-            output.append(" ")
+
             if (validTimeInterval.endsInDistantFuture()) {
-                output.append("valid-as-of |")
+                output.append(" valid-as-of |")
                 output.append(DateTimeFormatter.ISO_INSTANT.format(validTimeInterval.start))
                 output.append("|")
             }
             else {
-                output.append("valid-during |")
+                output.append(" valid-during |")
                 output.append(DateTimeFormatter.ISO_INSTANT.format(validTimeInterval.start))
                 output.append("|..|")
                 output.append(DateTimeFormatter.ISO_INSTANT.format(validTimeInterval.end))
                 output.append("|")
             }
+
         }
 
     }

@@ -18,11 +18,11 @@ import java.time.Instant
  * Data structure holding the bitemporal history of a property value.
  */
 class PropertyValueHistory(
-    initialAssertionTime: Instant,
+    initialTransactionTime: Instant,
     vararg initialValues: TimeSpanningPropertyValue
 ) : IPropertyValueHistory {
 
-    /** List of lists of property values by assertion time and state time. */
+    /** List of lists of property values by transaction time and valid time. */
     private val valueHistory: MutableList<Pair<Instant, List<TimeSpanningPropertyValue>>> = mutableListOf()
 
     init {
@@ -71,23 +71,23 @@ class PropertyValueHistory(
         }
 
         // Add to the history.
-        valueHistory.add(initialAssertionTime to states)
+        valueHistory.add(initialTransactionTime to states)
 
     }
 
-    override fun get(stateTime: Instant, assertionTime: Instant): TimeSpanningPropertyValue {
+    override fun get(validTime: Instant, transactionTime: Instant): TimeSpanningPropertyValue {
 
-        // Handle the case of the the latest assertion containing the instant.
+        // Handle the case of the the latest transaction containing the instant.
         var right = valueHistory.size - 1
 
-        if (valueHistory[right].first <= assertionTime) {
-            return getState(stateTime, valueHistory[right].second)
+        if (valueHistory[right].first <= transactionTime) {
+            return getState(validTime, valueHistory[right].second)
         }
 
-        // Handle the case of the earliest assertion following the instant.
+        // Handle the case of the earliest transaction following the instant.
         var left = 0
 
-        if (valueHistory[left].first > assertionTime) {
+        if (valueHistory[left].first > transactionTime) {
             return TimeSpanningPropertyValue(
                 AbsentPropertyValue,
                 TimeInterval.endingAt(valueHistory[left].first)
@@ -99,7 +99,7 @@ class PropertyValueHistory(
 
             val mid = (left + right) / 2
 
-            if (valueHistory[mid].first <= assertionTime) {
+            if (valueHistory[mid].first <= transactionTime) {
                 left = mid
             }
             else {
@@ -108,19 +108,20 @@ class PropertyValueHistory(
 
         }
 
-        check(valueHistory[left].first <= assertionTime)
-        check(assertionTime < valueHistory[left + 1].first)
+        check(valueHistory[left].first <= transactionTime)
+        check(transactionTime < valueHistory[left + 1].first)
 
-        return getState(stateTime, valueHistory[left].second)
+        return getState(validTime, valueHistory[left].second)
 
     }
 
-    override fun set(assertionTime: Instant, vararg newValues: TimeSpanningPropertyValue) {
+    override fun set(transactionTime: Instant, vararg newValues: TimeSpanningPropertyValue) {
 
-        val latestAssertionTime = valueHistory[valueHistory.size - 1].first
+        val latestTransactionTime = valueHistory[valueHistory.size - 1].first
         val latestList = valueHistory[valueHistory.size - 1].second
 
-        require(assertionTime >= latestAssertionTime)
+        // TODO: support augmenting the latest transaction time
+        require(transactionTime >= latestTransactionTime)
 
         val sortedNewValues = newValues.sortedBy { p -> p.interval.start }
 
@@ -277,11 +278,11 @@ class PropertyValueHistory(
         newList.add(stagedValue)
 
         // Add or replace the last chain in the history.
-        if (assertionTime > latestAssertionTime) {
-            valueHistory.add(assertionTime to newList)
+        if (transactionTime > latestTransactionTime) {
+            valueHistory.add(transactionTime to newList)
         }
         else {
-            valueHistory[valueHistory.size - 1] = assertionTime to newList
+            valueHistory[valueHistory.size - 1] = transactionTime to newList
         }
 
         checkInvariant()
@@ -289,27 +290,25 @@ class PropertyValueHistory(
     }
 
     /**
-     * Retrieves the value corresponding to given [stateTime] from the [values] already determined by client code to
-     * be applicable for a specific assertionTime.
+     * Retrieves the value corresponding to given [validTime] from the [values] already determined by client code to
+     * be applicable for a specific transactionTime.
      */
-    private fun getState(stateTime: Instant, values: List<TimeSpanningPropertyValue>): TimeSpanningPropertyValue {
+    private fun getState(validTime: Instant, values: List<TimeSpanningPropertyValue>): TimeSpanningPropertyValue {
 
-        // Handle the case of the the latest state containing the instant.
+        // Handle the common case of the the latest state containing the instant.
         var right = values.size - 1
 
-        if (values[right].interval.contains(stateTime)) {
+        if (values[right].interval.contains(validTime)) {
             return values[right]
         }
 
-        // Handle the case of the earliest state following the instant.
-        var left = 0
-
         // Binary search for the containing interval.
+        var left = 0
         while (left < right - 1) {
 
             val mid = (left + right) / 2
 
-            if (values[mid].interval.start <= stateTime) {
+            if (values[mid].interval.start <= validTime) {
                 left = mid
             }
             else {
@@ -318,7 +317,7 @@ class PropertyValueHistory(
 
         }
 
-        check(values[left].interval.contains(stateTime))
+        check(values[left].interval.contains(validTime))
 
         return values[left]
 
@@ -326,10 +325,11 @@ class PropertyValueHistory(
 
     private fun checkInvariant() {
 
-        var priorAssertionTime = Instant.MIN
+        var priorTransactionTime = Instant.MIN
 
         for (valueEntries in valueHistory) {
-            check(valueEntries.first > priorAssertionTime)
+            val transactionTime = valueEntries.first
+            check(transactionTime > priorTransactionTime)
 
             val valueList = valueEntries.second
 
@@ -342,7 +342,7 @@ class PropertyValueHistory(
                 check(valueList[i].state != valueList[i + 1].state)
             }
 
-            priorAssertionTime = valueEntries.first
+            priorTransactionTime = transactionTime
         }
 
     }
