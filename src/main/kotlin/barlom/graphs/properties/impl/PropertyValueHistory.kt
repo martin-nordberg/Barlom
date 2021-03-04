@@ -120,14 +120,13 @@ class PropertyValueHistory(
         val latestTransactionTime = valueHistory[valueHistory.size - 1].first
         val latestList = valueHistory[valueHistory.size - 1].second
 
-        // TODO: support augmenting the latest transaction time
         require(transactionTime >= latestTransactionTime)
 
         val sortedNewValues = newValues.sortedBy { p -> p.interval.start }
 
         // Require non-overlapping new state intervals.
         for (i in 0..sortedNewValues.size - 2) {
-            check(sortedNewValues[i].interval.precedesOrMeets(sortedNewValues[i + 1].interval))
+            require(sortedNewValues[i].interval.precedesOrMeets(sortedNewValues[i + 1].interval))
         }
 
         // Start with an empty list to be built by merging old and new.

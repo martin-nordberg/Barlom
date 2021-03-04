@@ -1,8 +1,8 @@
 
 call mvn clean package
-docker build -t martinnordberg/barlom .
+docker build -t microk8s.mshome.net:32000/barlom .
 
-docker push martinnordberg/barlom
+docker push microk8s.mshome.net:32000/barlom
 
 kubectl delete -n default replicaset barlom
 kubectl delete -n default service barlom

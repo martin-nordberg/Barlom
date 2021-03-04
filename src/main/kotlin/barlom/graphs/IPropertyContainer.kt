@@ -10,6 +10,7 @@ import barlom.graphs.properties.StringPropertyValue
 import barlom.graphs.properties.TimeSpanningPropertyValue
 import barlom.util.TimeInterval
 import java.time.Instant
+import java.util.*
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -38,7 +39,7 @@ interface IPropertyContainer {
     }
 
     /** @return a property by [propertyName]. */
-    operator fun get(propertyName: String): IPropertyValueHistory?
+    operator fun get(propertyName: String): Optional<IPropertyValueHistory>
 
     /** @return true if this concept has a property with given [propertyName]. */
     fun hasProperty(propertyName: String): Boolean

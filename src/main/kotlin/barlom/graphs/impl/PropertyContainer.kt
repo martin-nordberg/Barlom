@@ -10,6 +10,7 @@ import barlom.graphs.properties.IPropertyValueHistory
 import barlom.graphs.properties.TimeSpanningPropertyValue
 import barlom.graphs.properties.impl.PropertyValueHistory
 import java.time.Instant
+import java.util.*
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -31,8 +32,8 @@ abstract class PropertyContainer : IPropertyContainer {
         return properties.containsKey(propertyName)
     }
 
-    override fun get(propertyName: String): IPropertyValueHistory? {
-        return properties[propertyName]
+    override fun get(propertyName: String): Optional<IPropertyValueHistory> {
+        return Optional.ofNullable(properties[propertyName])
     }
 
     override fun propertyNames(): Set<String> {
