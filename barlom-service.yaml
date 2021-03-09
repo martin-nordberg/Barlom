@@ -1,56 +1,47 @@
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: barlom
-  labels:
-    app: barlom
-spec:
-  type: LoadBalancer
-  selector:
-    app: barlom
-  ports:
-  - port: 9000
-    targetPort: 8080
-    name: http-api
-  - port: 9001
-    targetPort: 8081
-    name: http-health
-
----
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: Deployment
 metadata:
-  name: barlom
+  name: barlom-app
   labels:
     app: barlom
+    tier: backend
+    version: v1
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app: barlom
+  replicas: 2
   template:
     metadata:
       labels:
         app: barlom
     spec:
       containers:
-      - name: barlom
-        image: martinnordberg/barlom:latest
-        ports:
-        - containerPort: 8080
-          name: http-api
-        - containerPort: 8081
-          name: http-health
-#        livenessProbe:
-#          httpGet:
-#            path: /config
-#            port: http-health
-#          initialDelaySeconds: 15
-#          timeoutSeconds: 1
-#        readinessProbe:
-#          httpGet:
-#            path: /readiness
-#            port: 8081
-#          initialDelaySeconds: 20
-#          periodSeconds: 5
+        - name: bar-app
+          image: localhost:32000/barlom:latest
+          ports:
+          - containerPort: 8080
+            name: http-api
+          - containerPort: 8081
+            name: http-health
+          env:
+            - name: ENV_SAMPLE
+              value: Example
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: barlom-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /barlom
+            backend:
+              serviceName: barlom-app
+              servicePort: 8080
+          - path: /barlom-health
+            backend:
+              serviceName: barlom-app
+              servicePort: 8081
